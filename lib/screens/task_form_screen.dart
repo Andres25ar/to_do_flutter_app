@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:to_do_list_app/utils/constants.dart';
 
 import '../models/task.dart';
 import '../providers/task_provider.dart';
@@ -17,7 +19,8 @@ class TaskFormScreen extends StatefulWidget {
 
 class _TaskFormScreenState extends State<TaskFormScreen>{
   late TextEditingController _titleController;
-  late TextEditingController _categoryController;
+  //late TextEditingController _categoryController;
+  late String? _selectedCategory;
   final _formKey = GlobalKey<FormState>();
   bool _isEditing = false;
 
@@ -28,10 +31,12 @@ class _TaskFormScreenState extends State<TaskFormScreen>{
     if (widget.task!=null){
       _isEditing = true;
       _titleController = TextEditingController(text: widget.task!.title);
-      _categoryController = TextEditingController(text:widget.task!.category);
+      //_categoryController = TextEditingController(text:widget.task!.category);
+      _selectedCategory = widget.task!.category;
     } else {
       _titleController = TextEditingController();
-      _categoryController = TextEditingController();
+      //_categoryController = TextEditingController();
+      _selectedCategory = null;
     }
   }
 
@@ -39,7 +44,8 @@ class _TaskFormScreenState extends State<TaskFormScreen>{
   @override
   void dispose(){
     _titleController.dispose();
-    _categoryController.dispose();
+    //_categoryController.dispose();
+    //_selectedCategory.dispose();
     super.dispose();
   }
 
@@ -79,8 +85,8 @@ class _TaskFormScreenState extends State<TaskFormScreen>{
 
   @override
   Widget build(BuildContext context){
-    //final taskProvider = Provider.of<TaskProvider>(context, listen:false);
     final taskProvider = context.read<TaskProvider>();
+    //final categoryProvider = context.read<Category>();
 
     return Scaffold(
       appBar: AppBar(
@@ -113,8 +119,32 @@ class _TaskFormScreenState extends State<TaskFormScreen>{
 
               SizedBox(height: 20),
 
-              TextFormField(
-                controller: _categoryController,
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(
+                  labelText: 'Seleccione una categoria',
+                ),
+                value: _selectedCategory,
+                validator: (value){
+                  if (value == null || value.isEmpty){
+                    return 'por favor ingrese una category';
+                  }
+                  return null;
+                },
+                items: CategoryList().categories.map((String categories){
+                  return DropdownMenuItem(
+                    value: categories,
+                    child: Text(categories)
+                  );
+                }).toList(),
+                onChanged: (String? nwValue){
+                  setState(() {
+                    _selectedCategory = nwValue;
+                  });
+                }
+              ),
+              /*FormField(
+                //controller: _categoryController,
+                controller: _selectedCategory,
                 decoration: InputDecoration(
                   labelText: 'Category',
                   border: OutlineInputBorder(),
@@ -125,7 +155,7 @@ class _TaskFormScreenState extends State<TaskFormScreen>{
                   }
                   return null;
                 },
-              ), // texformfield
+              ),*/ // texformfield
 
               SizedBox(height: 20),
 
@@ -140,14 +170,16 @@ class _TaskFormScreenState extends State<TaskFormScreen>{
                         taskProvider.editTask(
                           widget.task!.id,
                           _titleController.text,
-                          _categoryController.text
+                          //_categoryController.text
+                          _selectedCategory!
                         );
                       }
                       //agregar tarea
                       else {
                         taskProvider.addTask(
                           _titleController.text,
-                          _categoryController.text
+                          //_categoryController.text
+                          _selectedCategory!
                         );
                       }
                       Navigator.pop(context);

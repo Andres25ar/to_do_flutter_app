@@ -19,7 +19,6 @@ class TaskListScreen extends StatelessWidget{
 
     return Scaffold(
       appBar: AppBar(
-        //title: Text('Lista de tareas',)
         title: Text('Tareas (${tasks.length})'),
       ), //appbar
 
@@ -30,14 +29,12 @@ class TaskListScreen extends StatelessWidget{
             child: !taskProvider.hasAnyTask ? Center(
               child: Text('No hay tareas', style: TextStyle(fontSize: 16),),
             )
+            //si la lista de tareas creadas no está vacia
             :Row(
               children: [
                 Expanded(
                   //Filtor "todas"
-                  /*child: tasks.isEmpty
-                  ? Center(
-                    child: Text('No hay tareas', style: TextStyle(fontSize: 16),),
-                  ):*/ child: FilterButton(
+                  child: FilterButton(
                     label: 'Todas',
                     isSelected: filter == TaskFilter.all,
                     onPressed: () => context.read<TaskProvider>().setFilter(TaskFilter.all),
@@ -48,10 +45,7 @@ class TaskListScreen extends StatelessWidget{
 
                 //filtro "pendientes"
                 Expanded(
-                  /*child: tasks.any((task) => !task.isCompleted)
-                      ? Center(
-                    child: Text('No hay tareas pendientes', style: TextStyle(fontSize: 16),),
-                  ):*/child:  FilterButton(
+                  child:  FilterButton(
                     label: 'Pendientes',
                     isSelected: filter == TaskFilter.pending,
                     onPressed: () => context.read<TaskProvider>().setFilter(TaskFilter.pending),
@@ -62,10 +56,7 @@ class TaskListScreen extends StatelessWidget{
 
                 //filtro "completados"
                 Expanded(
-                  /*child: tasks.any((task) => task.isCompleted)
-                      ? Center(
-                    child: Text('No hay tareas completadas', style: TextStyle(fontSize: 16),),
-                  ):*/ child: FilterButton(
+                  child: FilterButton(
                     label: 'Completadas',
                     isSelected: filter == TaskFilter.completed,
                     onPressed: () => context.read<TaskProvider>().setFilter(TaskFilter.completed),
@@ -79,37 +70,29 @@ class TaskListScreen extends StatelessWidget{
             child: ListView.builder(
               itemCount: tasks.length,
               itemBuilder: (context, index) {
-                //final task = taskProvider.tasks[index];
                 final task = tasks[index];
 
-                return GestureDetector(
+                return TaskItem(task: task);
+                /*return GestureDetector(
                   onTap: () {
                     Navigator.push(
                         context, MaterialPageRoute(
                         builder: (context) => TaskFormScreen(task: task,)
                     ));
                   },
-
                   child: TaskItem(task:task),
-
-                ); // gestureDetector
-
-
+                );*/ // gestureDetector
               },
             ),
           ), // expanded
-
         ], // children
       ), // column
 
       floatingActionButton: FloatingActionButton(
         onPressed: (){
-          //Navigator.pushNamed(context, '/add-task');
           Navigator.pushNamed(context, AppRoutes.addTask);
         },
-
         child: Icon(Icons.add),
-
       ), // floatingactionbutton
 
     );

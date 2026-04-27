@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_list_app/providers/task_provider.dart';
 import 'package:to_do_list_app/routes/app_routes.dart';
-//import 'package:to_do_list_app/screen/task_form_screen.dart';
-//import 'package:to_do_list_app/screen/task_list_screen.dart';
 
 void main() {
   runApp(
